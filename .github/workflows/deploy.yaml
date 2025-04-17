@@ -1,0 +1,23 @@
+name: Deploy Hugo Site
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 * * * *' # Run hourly
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+      - name: Build
+        run: hugo --minify
+      - name: Deploy
+        env:
+          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+          HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
+        run: |
+          rsync -av --delete public/ $anactualbeing@gmail.com@https://srv1922-files.hstgr.io/b84cd6800851a903/files/public_html/
