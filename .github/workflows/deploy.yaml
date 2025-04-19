@@ -45,8 +45,18 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 65002 -H 109.106.250.157 >> ~/.ssh/known_hosts
           ssh -p 65002 -v $HOSTINGER_USER@109.106.250.157 || echo "SSH debug output"
+      - #name: Deploy  ## Uncomment this block to use rsync instead of FTP
+        #env:
+        #  HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+        #run: |
+        #  rsync -av -e "ssh -p 65002 -v" --delete public/ $HOSTINGER_USER@109.106.250.157:/home/u277409165/public_html/ || echo "Rsync failed"
       - name: Deploy
-        env:
-          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
-        run: |
-          rsync -av -e "ssh -p 65002 -v" --delete public/ $HOSTINGER_USER@109.106.250.157:/home/u277409165/public_html/ || echo "Rsync failed"
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.u277409165.hostinger.com
+          username: u277409165
+          password: ${{ secrets.HOSTINGER_PASS }}
+          local-dir: ./public/
+          server-dir: /home/u277409165/public_html/
+          protocol: ftps
+          port: 21
