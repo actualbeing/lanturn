@@ -38,18 +38,6 @@ jobs:
           git push https://$GH_TOKEN@github.com/actualbeing/lanturn.git main || echo "No push needed"
       - name: Build
         run: hugo --minify
-      - #name: Set up SSH
-        #run: |
-        #  mkdir -p ~/.ssh
-        #  echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        #  chmod 600 ~/.ssh/id_rsa
-        #  ssh-keyscan -p 65002 -H 109.106.250.157 >> ~/.ssh/known_hosts
-        #  ssh -p 65002 -v $HOSTINGER_USER@109.106.250.157 || echo "SSH debug output"
-      - #name: Deploy  ## Uncomment this block to use rsync instead of FTP
-        #env:
-        #  HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
-        #run: |
-        #  rsync -av -e "ssh -p 65002 -v" --delete public/ $HOSTINGER_USER@109.106.250.157:/home/u277409165/public_html/ || echo "Rsync failed"
       - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
