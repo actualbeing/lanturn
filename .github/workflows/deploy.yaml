@@ -38,13 +38,13 @@ jobs:
           git push https://$GH_TOKEN@github.com/actualbeing/lanturn.git main || echo "No push needed"
       - name: Build
         run: hugo --minify
-      - name: Set up SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 65002 -H 109.106.250.157 >> ~/.ssh/known_hosts
-          ssh -p 65002 -v $HOSTINGER_USER@109.106.250.157 || echo "SSH debug output"
+      - #name: Set up SSH
+        #run: |
+        #  mkdir -p ~/.ssh
+        #  echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        #  chmod 600 ~/.ssh/id_rsa
+        #  ssh-keyscan -p 65002 -H 109.106.250.157 >> ~/.ssh/known_hosts
+        #  ssh -p 65002 -v $HOSTINGER_USER@109.106.250.157 || echo "SSH debug output"
       - #name: Deploy  ## Uncomment this block to use rsync instead of FTP
         #env:
         #  HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
@@ -53,9 +53,9 @@ jobs:
       - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.u277409165.hostinger.com
-          username: u277409165
-          password: ${{ secrets.HOSTINGER_PASS }}
+          server: 109.106.250.157
+          username: u277409165.autobot69
+          password: ${{ secrets.HOSTINGER_FTP_PASS }}
           local-dir: ./public/
           server-dir: /home/u277409165/public_html/
           protocol: ftps
