@@ -1,3 +1,7 @@
+---
+description: "This week's digest tackles a global flu spike, an Ohio factory fire, and tech layoffs. We uncover shared stakes—health, safety, opportunity—and offer actionable steps like getting vaccinated, testing smoke alarms, and upskilling. Join us to build a stronger tomorrow, together."
+tags: ["flu", "health", "safety", "factory fire", "tech layoffs", "vaccination", "smoke alarms", "upskilling", "community", "progress"]
+---
 # Lanturn Weekly: Light on, Noise Off  
 **Monday, April 14, 2025 – Common stakes, not clashing takes**  
 <!-- *Word Count*: ~1,100 --> 
