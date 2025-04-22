@@ -12,9 +12,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: '0.145.0'
+          extended: true
       - name: Update Draft Status
         run: |
           current_time=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
@@ -35,18 +36,20 @@ jobs:
           git config user.email "actions@github.com"
           git add content/posts/*.md
           git commit -m "Update draft status for published posts" || echo "No changes to commit"
-          git push https://$GH_TOKEN@github.com/actualbeing/lanturn.git main || echo "No push needed"
+          git push https://$GH_TOKEN@github.com/WILLH/lanturn.git main || echo "No push needed"
       - name: Build
-        run: hugo --minify
+        run: |
+          hugo --minify --verbose
+          ls -R public/posts
       - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: 109.106.250.157
-          username: u277409165.autobot69
+          server: ftp.lanturnweekly.com
+          username: u277409165
           password: ${{ secrets.HOSTINGER_FTP_PASS }}
           local-dir: ./public/
           server-dir: /
-          protocol: ftps
+          protocol: ftp
           port: 21
           log-level: verbose
           dangerous-clean-slate: true
