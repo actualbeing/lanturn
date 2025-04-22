@@ -39,7 +39,7 @@ jobs:
           git push https://$GH_TOKEN@github.com/WILLH/lanturn.git main || echo "No push needed"
       - name: Build
         run: |
-          hugo --minify --verbose
+          hugo --minify --verbose --logLevel debug
           ls -R public/posts
       - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
