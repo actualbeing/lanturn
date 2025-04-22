@@ -11,6 +11,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          submodules: true
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: Set up Hugo
         uses: peaceiris/actions-hugo@v3
         with:
@@ -39,6 +44,7 @@ jobs:
           git push https://$GH_TOKEN@github.com/WILLH/lanturn.git main || echo "No push needed"
       - name: Build
         run: |
+          hugo mod get -u
           hugo --minify --verbose --logLevel debug
           ls -R public/posts
       - name: Deploy
