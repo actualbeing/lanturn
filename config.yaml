@@ -1,4 +1,7 @@
 baseURL: https://lanturnweekly.com/
 languageCode: en-us
 title: Lanturn Weekly
-theme: ["PaperMod"]
+theme: PaperMod
+module:
+  imports:
+    - path: github.com/adityatelange/hugo-PaperMod
