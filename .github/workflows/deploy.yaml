@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 4 * * *'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -42,10 +42,11 @@ jobs:
           git add content/posts/*.md
           git commit -m "Update draft status for published posts" || echo "No changes to commit"
           git push https://$GH_TOKEN@github.com/actualbeing/lanturn.git main || { echo "Push failed"; exit 1; }
+      - name: Install Hugo Modules
+        run: hugo mod get -u
       - name: Build
         run: |
-          hugo mod get -u
-          hugo --minify --verbose --logLevel debug
+          hugo --minify --verbose --logLevel debug || { echo "Build failed"; exit 1; }
           ls -R public/posts
       - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
