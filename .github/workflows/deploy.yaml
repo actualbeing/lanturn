@@ -46,7 +46,7 @@ jobs:
         run: hugo mod get -u
       - name: Build
         run: |
-          hugo --minify --verbose --logLevel debug || { echo "Build failed"; exit 1; }
+          hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
           ls -R public/posts
       - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
