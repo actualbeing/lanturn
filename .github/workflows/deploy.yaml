@@ -21,8 +21,9 @@ jobs:
         with:
           hugo-version: '0.146.6'
           extended: true
-      - name: Install Hugo Modules
+      - name: Initialize Hugo Modules
         run: |
+          hugo mod init github.com/actualbeing/lanturn
           hugo mod get -u github.com/adityatelange/hugo-PaperMod
       - name: Update Draft Status
         run: |
