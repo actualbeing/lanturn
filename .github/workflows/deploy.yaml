@@ -49,8 +49,8 @@ jobs:
         run: |
           hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
           ls -R public/posts
-          - name: Install basic-ftp
-          run: npm install -g basic-ftp
+      - name: Install basic-ftp
+        run: npm install -g basic-ftp
         
       - name: FTP Upload
         run: |
