@@ -61,4 +61,3 @@ jobs:
           port: 21
           log-level: verbose
           dangerous-clean-slate: true
-          ftp-retry-limit: 3
