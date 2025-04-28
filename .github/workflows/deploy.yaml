@@ -56,5 +56,6 @@ jobs:
           username: u2774091650.autobot69
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 65002
-          source: ./public/*
-          target: /home/u2774091650/public_html/
+          source: "public/"
+          target: "/home/u2774091650/public_html"
+          strip_components: 1
