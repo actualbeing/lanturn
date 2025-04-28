@@ -49,12 +49,15 @@ jobs:
         run: |
           hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
           ls -R public/posts
-      - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: 109.106.250.157
+          server: ftp.lanturnweekly.com
           username: u2774091650.autobot69
-          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-          port: 21  # Standard FTP port, adjust if needed
+          password: ${{ secrets.HOSTINGER_FTP_PASS }}
           local-dir: ./public/
-          server-dir: /public_html/
+          server-dir: /
+          protocol: ftps
+          port: 21
+          log-level: verbose
+          dangerous-clean-slate: true
