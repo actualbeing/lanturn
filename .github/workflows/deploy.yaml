@@ -50,14 +50,11 @@ jobs:
           hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
           ls -R public/posts
       - name: Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: appleboy/scp-action@master
         with:
-          server: ftp.lanturnweekly.com
+          host: 109.106.250.157
           username: u2774091650.autobot69
-          password: ${{ secrets.HOSTINGER_FTP_PASS }}
-          local-dir: ./public/
-          server-dir: /
-          protocol: ftp
-          port: 21
-          log-level: verbose
-          dangerous-clean-slate: true
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
+          source: ./public/*
+          target: /home/u2774091650/public_html/
