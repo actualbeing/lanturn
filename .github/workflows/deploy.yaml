@@ -49,15 +49,36 @@ jobs:
         run: |
           hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
           ls -R public/posts
-      - name: Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ftp.lanturnweekly.com
-          username: u2774091650.autobot69
-          password: ${{ secrets.HOSTINGER_FTP_PASS }}
-          local-dir: ./public/
-          server-dir: /
-          protocol: ftps
-          port: 21
-          log-level: verbose
-          dangerous-clean-slate: true
+          - name: Install basic-ftp
+          run: npm install -g basic-ftp
+        
+      - name: FTP Upload
+        run: |
+          node -e "
+              const ftp = require('basic-ftp');
+              
+              async function uploadFiles() {
+                const client = new ftp.Client();
+                client.ftp.verbose = true;
+                try {
+                  await client.access({
+                    host: '109.106.250.157',
+                    port: 21,
+                    user: 'u2774091650.autobot69',
+                    password: '${{ secrets.HOSTINGER_FTP_PASSWORD }}',
+                    secure: true,
+                    secureOptions: { rejectUnauthorized: false }
+                  });
+                  await client.ensureDir('/public_html/');
+                  await client.clearWorkingDir();
+                  await client.uploadFromDir('./public/');
+                  console.log('Upload completed');
+                } catch(err) {
+                  console.error(err);
+                  process.exit(1);
+                }
+                client.close();
+              }
+              
+              uploadFiles();
+            "
