@@ -1,62 +1,62 @@
 name: Deploy Hugo Site
 on:
-  push:
-    branches: [ main ]
-  schedule:
-    - cron: '0 4 * * *'
+ push:
+   branches: [ main ]
+ schedule:
+   - cron: '0 4 * * *'
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Set up Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '0.146.6'
-          extended: true
-      - name: Install Hugo Modules
-        run: |
-          hugo mod get -u github.com/adityatelange/hugo-PaperMod
-      - name: Update Draft Status
-        run: |
-          current_time=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
-          for file in content/posts/*.md; do
-            if [ -f "$file" ]; then
-              publish_date=$(grep '^publishDate:' "$file" | cut -d' ' -f2)
-              if [[ ! -z "$publish_date" && "$publish_date" < "$current_time" ]]; then
-                sed -i 's/draft: true/draft: false/' "$file"
-                echo "Updated $file to draft: false"
-              fi
-            fi
-          done
-      - name: Commit Draft Changes
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
-          git add content/posts/*.md
-          git commit -m "Update draft status for published posts" || echo "No changes to commit"
-          git push https://$GH_TOKEN@github.com/actualbeing/lanturn.git main || { echo "Push failed"; exit 1; }
-      - name: Build
-        run: |
-          hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
-          ls -R public/posts
-      - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: 109.106.250.157
-          username: u2774091650.autobot69
-          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-          port: 21
-          protocol: ftp-explicit # Try explicit FTPS mode
-          local-dir: ./public/
-          server-dir: /public_html/
-          dangerous-clean-slate: true # Be careful with this option
+ build-and-deploy:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v3
+       with:
+         fetch-depth: 0
+         submodules: true
+     - name: Set up Node.js
+       uses: actions/setup-node@v4
+       with:
+         node-version: '20'
+     - name: Set up Hugo
+       uses: peaceiris/actions-hugo@v3
+       with:
+         hugo-version: '0.146.6'
+         extended: true
+     - name: Install Hugo Modules
+       run: |
+         hugo mod get -u github.com/adityatelange/hugo-PaperMod
+     - name: Update Draft Status
+       run: |
+         current_time=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
+         for file in content/posts/*.md; do
+           if [ -f "$file" ]; then
+             publish_date=$(grep '^publishDate:' "$file" | cut -d' ' -f2)
+             if [[ ! -z "$publish_date" && "$publish_date" < "$current_time" ]]; then
+               sed -i 's/draft: true/draft: false/' "$file"
+               echo "Updated $file to draft: false"
+             fi
+           fi
+         done
+     - name: Commit Draft Changes
+       env:
+         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+       run: |
+         git config user.name "GitHub Actions Bot"
+         git config user.email "actions@github.com"
+         git add content/posts/*.md
+         git commit -m "Update draft status for published posts" || echo "No changes to commit"
+         git push https://$GH_TOKEN@github.com/actualbeing/lanturn.git main || { echo "Push failed"; exit 1; }
+     - name: Build
+       run: |
+         hugo --minify --logLevel debug || { echo "Build failed"; exit 1; }
+         ls -R public/posts
+     - name: FTP Deploy
+       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+       with:
+         server: 109.106.250.157
+         username: u2774091650.autobot69
+         password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+         port: 21
+         protocol: ftp-explicit
+         local-dir: ./public/
+         server-dir: /
+         dangerous-clean-slate: true
