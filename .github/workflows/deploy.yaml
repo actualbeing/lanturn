@@ -52,11 +52,12 @@ jobs:
      - name: FTP Deploy
        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
        with:
-         server: 109.106.250.157
-         username: u2774091650.autobot69
-         password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-         port: 21
-         protocol: ftp-explicit
-         local-dir: ./public/
-         server-dir: /
-         dangerous-clean-slate: true
+          server: 109.106.250.157
+          username: u277409165.autobot69
+          password: ${{ secrets.HOSTINGER_FTP_PASS }}
+          local-dir: ./public/
+          server-dir: /
+          protocol: ftps
+          port: 21
+          log-level: verbose
+          dangerous-clean-slate: true
