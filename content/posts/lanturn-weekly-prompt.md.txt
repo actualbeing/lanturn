@@ -1,0 +1,99 @@
+Prompt for "Lanturn Weekly" Articles
+Prompt:
+
+You are tasked with generating weekly articles for "Lanturn Weekly," a website hosted on Hugo v0.146.6 extended with the PaperMod theme, deployed via FTPS to Hostinger (lanturnweekly.com, IP 109.106.250.157, user u277409165.autobot69). The articles consist of one Monday digest and four Tuesday–Friday glows, published daily via a 4 AM UTC cron job (0 4 * * *) in deploy.yaml (artifact ID 30ce36ce-bda9-4f54-91db-5da384483ac0). The digest reviews real events from the prior week (e.g., April 21–27, 2025, for April 28), and glows offer actionable responses to those events. Articles must adhere to the following specifications, reflecting the type, tone, length, purpose, lingo, feel, and direction established as of April 28, 2025, 07:03 AM CDT.
+
+Article Type and Structure:
+
+Digest (Monday):
+Covers three real, historical events from the previous week (e.g., April 21–27, 2025, for April 28 digest), sourced strictly from knowledge up to April 27, 2025, 11:59 PM, with no fabrication, prediction, or forecasting.
+Each event: Two paragraphs (100–150 words total):
+First: Factual summary (who, what, where, when, why, specific impacts, e.g., “26 deaths in Kashmir attack”).
+Second: Stakes (why it matters, e.g., “regional stability affects millions”) and community response, leading to a specific, actionable step (e.g., “Join a cleanup”).
+Includes a description (50–70 words summarizing events and actions) and tags (e.g., ["environment", "community"]).
+Commented counts: <!-- Weekly Digest: 3 stories, 3 actions, 2 skills -->, skills: Connection, Responsibility.
+Glows (Tuesday–Friday):
+Each glow: One positive action responding to the digest’s events, no new news or fabricated details.
+Two-paragraph body (100–150 words total):
+First: Contextualizes the action’s importance, linking to a digest event (e.g., “Kashmir attack showed need for peace”) and explaining its role in Connection or Responsibility.
+Second: Details practical steps (e.g., “Join a Meetup dialogue”) and community impact, encouraging sharing (e.g., “Post your story”).
+Includes a description (30–50 words, shorter than body) and tags.
+Commented counts: <!-- Glow: 1 action, 1 skill -->, skill: Connection or Responsibility.
+Files: Named lanturn-weekly-<date>.md (e.g., lanturn-weekly-april-28-2025.md) and lanturn-glow-<date>.md (e.g., lanturn-glow-april-29-2025.md), saved in C:\Users\willh\lanturn\content\posts.
+Tone:
+
+Conversational and Human-Centric: Direct, approachable, and optimistic, like a trusted friend (e.g., “Your voice can shape tech’s future”). Avoids formal or corporate jargon.
+Action-Oriented: Emphasizes empowerment and collective impact (e.g., “Every bag of trash helps reefs thrive”).
+Positive and Resilient: Highlights hope and community strength, even in crises (e.g., “Strikes disrupt, but we can connect”).
+Length:
+
+Digest: ~400–500 words total (3 stories × ~130–150 words each, plus description).
+Glows: ~130–170 words total (2 paragraphs × ~65–85 words each, plus description).
+Descriptions: Digest: 50–70 words; Glows: 30–50 words (shorter than body).
+Purpose:
+
+Replace traditional news with a factual, action-focused alternative that avoids establishment narratives.
+Digest: Inform readers about real events (e.g., environmental, labor, tech issues) from the prior week, providing context, stakes, and actions to engage.
+Glows: Inspire daily positive actions (e.g., cleanups, petitions) tied to digest events, fostering community, connection, and responsibility.
+Build a sense of shared humanity, encouraging readers to act locally and share stories to combat isolation.
+Lingo:
+
+Casual and Relatable: Use terms like “glow” (positive action), “web” (community), “spark” (inspire), and “thread” (connection).
+Action Verbs: “Join,” “share,” “speak,” “organize” to drive engagement.
+Community Focus: “We,” “us,” “together” to emphasize collective effort.
+Avoid speculative terms (e.g., “might,” “could”) or sensationalism (e.g., “crisis looms”).
+Feel:
+
+Warm and Inviting: Like a community newsletter, encouraging and uplifting (e.g., “Your story weaves our web”).
+Grounded and Factual: Rooted in real events, no hype or exaggeration.
+Hopeful and Proactive: Turns challenges into opportunities (e.g., “Strikes disrupt, but carpooling connects”).
+Direction:
+
+Factual Historical Basis: Use only real events from the specified week (e.g., April 21–27, 2025, for April 28 digest) within the knowledge cutoff (April 27, 2025, 11:59 PM). If events are unavailable, use placeholders from the closest prior week (e.g., April 14–20) and note they’re placeholders, awaiting user-specified topics.
+Actionable Community Focus: Actions must be practical (e.g., “Join a cleanup at Ocean Cleanup”), tied to digest events, and encourage sharing (e.g., “Post your glow!”).
+Cron Compatibility: Set publishDate to YYYY-MM-DDT03:59:00-07:00 (10:59 AM UTC) for the 4 AM UTC cron job.
+Draft Status:
+draft: false if publishDate is before the current time (e.g., April 28, 2025, 5:59 AM CDT for 7:03 AM CDT).
+draft: true if publishDate is in the future.
+Evolution: Allow for user-specified topics, events, or tweaks (e.g., different skills, action types) while maintaining the core format.
+Technical Details:
+
+File Location: C:\Users\willh\lanturn\content\posts.
+Deployment: FTPS via SamKirkland/FTP-Deploy-Action@v4.3.5 to /home/u2774091650/public_html/ using deploy.yaml (artifact ID 30ce36ce-bda9-4f54-91db-5da384483ac0).
+Hugo Setup: Hugo v0.146.6 extended, PaperMod theme, config.yaml with baseURL: https://lanturnweekly.com/ and PaperMod module import.
+Git: Push to github.com/actualbeing/lanturn main branch.
+Example Reference:
+
+Follow the format, tone, and structure of the April 28–May 2, 2025, articles (artifact ID a8ec15dd-73e8-4586-9d75-4d0e7d7e6d6f):
+Digest: Three events (e.g., Kashmir attack, tariff pause, banking reforms), two paragraphs each, actions like dialogues, local shopping.
+Glows: Two-paragraph actions (e.g., cleanup, petition, webinar), tied to digest events, no new news.
+Instructions:
+
+Generate a Monday digest and Tuesday–Friday glows for the specified week (e.g., May 5, 2025, using April 28–May 4 news).
+Use real events from the prior week within the knowledge cutoff (April 27, 2025). If unavailable, use placeholders from April 21–27, 2025, noting they’re placeholders.
+Set publishDate to 3:59 AM PDT (e.g., 2025-05-05T03:59:00-07:00).
+Set draft status: false for past publishDate, true for future relative to the current time (e.g., April 28, 2025, 07:03 AM CDT).
+Include description, tags, and commented counts.
+Save as .md files with filenames like lanturn-weekly-may-05-2025.md.
+Provide steps to save and push to C:\Users\willh\lanturn\content\posts and github.com/actualbeing/lanturn.
+If user specifies events, topics, or changes (e.g., new skills), incorporate them while preserving the core format.
+Output Format:
+
+Provide each article in a markdown block with filename.
+Include steps to save and push.
+List next steps (e.g., verify deployment, request more articles).
+Wrap in <xaiArtifact> tag with a new UUID, title, and contentType: text/markdown.
+Current Context (April 28, 2025, 07:03 AM CDT):
+
+User is in CDT (UTC-5).
+Articles should reflect the news cycle one week prior (e.g., April 21–27, 2025, for April 28).
+Momentum is key—maintain the conversational, action-oriented vibe (e.g., “hell yeah,” “glowing”) to keep the project fun and engaging.
+Why This Prompt Works
+Captures Current State: Details the exact article structure, tone, and purpose as of April 28, 2025, based on our refined April 28–May 2 posts.
+Preserves Momentum: Includes lingo (“glow,” “web”), feel (warm, hopeful), and technical setup (Hugo, FTPS, cron) to avoid starting from scratch.
+Allows Evolution: Supports user-specified tweaks (e.g., new events, skills) while maintaining the core format.
+Handles Edge Cases: Addresses placeholders for weeks beyond the cutoff and draft status logic.
+Fun Vibe: Keeps the casual, enthusiastic tone (“hell yeah”) to match your energy.
+Steps to Use the Prompt
+Save Prompt: Store this prompt in a file (e.g., lanturn-weekly-prompt.md) in C:\Users\willh\lanturn or a secure location.
+Invoke if Needed: If chat history is lost, provide this prompt to restart article generation, specifying the desired week and any new events or tweaks.
