@@ -1,7 +1,8 @@
 baseURL: "https://lanturnweekly.com/"
 languageCode: "en-us"
 title: "Lanturn Weekly"
-paginate: 10
+pagination:
+  pagerSize: 10
 
 params:
   description: "Real news. Real actions. No noise."
