@@ -1,0 +1,226 @@
+#!/bin/bash
+# ============================================
+# Lanturn Weekly — Editorial Pipeline
+# Usage: ./lanturn [research|review|draft|publish]
+# ============================================
+
+set -e
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Colors
+AMBER='\033[0;33m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+DIM='\033[2m'
+NC='\033[0m'
+
+glow() { echo -e "${AMBER}🔥 $1${NC}"; }
+ok()   { echo -e "${GREEN}✅ $1${NC}"; }
+err()  { echo -e "${RED}❌ $1${NC}"; }
+dim()  { echo -e "${DIM}   $1${NC}"; }
+
+# -------------------------------------------
+# Prereqs check
+# -------------------------------------------
+check_prereqs() {
+    local missing=0
+    if ! command -v node &>/dev/null; then
+        err "Node.js required. Install: https://nodejs.org"
+        missing=1
+    fi
+    if ! command -v claude &>/dev/null; then
+        err "Claude Code required. Install: npm install -g @anthropic-ai/claude-code"
+        missing=1
+    fi
+    if [ -z "$ANTHROPIC_API_KEY" ]; then
+        err "ANTHROPIC_API_KEY not set. Export it in your shell profile."
+        missing=1
+    fi
+    if [ $missing -eq 1 ]; then exit 1; fi
+}
+
+# -------------------------------------------
+# RESEARCH — Search for news, produce candidates
+# -------------------------------------------
+cmd_research() {
+    check_prereqs
+    glow "Researching positive news for this week..."
+    echo ""
+
+    # Install deps if needed
+    if [ ! -d "node_modules" ]; then
+        dim "Installing dependencies..."
+        npm install --silent 2>/dev/null
+    fi
+
+    # Run research via Anthropic API with web search
+    node scripts/research.mjs
+
+    echo ""
+    ok "Candidates written to: editorial/candidates.md"
+    echo ""
+    echo "   Next steps:"
+    dim "1. Open editorial/candidates.md"
+    dim "2. Mark your picks by changing [ ] to [x]"
+    dim "3. Run: ./lanturn draft"
+    echo ""
+}
+
+# -------------------------------------------
+# DRAFT — Generate articles from approved picks
+# -------------------------------------------
+cmd_draft() {
+    check_prereqs
+
+    CANDIDATES="editorial/candidates.md"
+    if [ ! -f "$CANDIDATES" ]; then
+        err "No candidates file found. Run './lanturn research' first."
+        exit 1
+    fi
+
+    # Check that at least one pick is marked
+    if ! grep -q "\[x\]" "$CANDIDATES"; then
+        err "No stories selected. Mark your picks with [x] in $CANDIDATES"
+        exit 1
+    fi
+
+    glow "Drafting articles from your picks..."
+    echo ""
+
+    # Calculate dates for this week's posts
+    # Monday digest, Thursday glow
+    MONDAY=$(date -d "next Monday" +%Y-%m-%d 2>/dev/null || date -v+1w -v-Mon +%Y-%m-%d 2>/dev/null || date +%Y-%m-%d)
+    THURSDAY=$(date -d "$MONDAY + 3 days" +%Y-%m-%d 2>/dev/null || date -v+4d -j -f "%Y-%m-%d" "$MONDAY" +%Y-%m-%d 2>/dev/null || echo "${MONDAY%??}$(printf '%02d' $((${MONDAY##*-} + 3)))")
+
+    DIGEST_FILE="content/posts/${MONDAY}-digest.md"
+    GLOW_FILE="content/posts/${THURSDAY}-glow.md"
+
+    claude -p "
+You are the editor of Lanturn Weekly. Read the CLAUDE.md file for editorial guidelines.
+
+Read the file editorial/candidates.md. The stories marked with [x] are approved for publication.
+
+Write two files:
+
+1. A Monday digest at $DIGEST_FILE with all [x] stories (target: 400-700 words per story).
+   Use the date ${MONDAY}T06:00:00-06:00 in frontmatter.
+
+2. A Thursday glow at $GLOW_FILE that deep-dives on the strongest CTA from the digest
+   (target: 800-1200 words). Use date ${THURSDAY}T06:00:00-06:00 in frontmatter.
+
+Follow ALL writing standards from CLAUDE.md, especially:
+- Relatable comparisons for large numbers
+- Verified sources only (include in frontmatter)
+- Substantial depth, not surface-level summaries
+- Warm, conversational tone
+
+After writing, print a summary of what you wrote and confidence flags for each story.
+" \
+    --allowedTools "Read,Write,Edit,Glob" \
+    --max-turns 15
+
+    echo ""
+    ok "Drafts written!"
+    dim "Digest: $DIGEST_FILE"
+    dim "Glow:   $GLOW_FILE"
+    echo ""
+    echo "   Next steps:"
+    dim "1. Review the drafts"
+    dim "2. Edit anything you want to change"
+    dim "3. Run: ./lanturn publish"
+    echo ""
+}
+
+# -------------------------------------------
+# REVIEW — Open Claude Code interactively for edits
+# -------------------------------------------
+cmd_review() {
+    check_prereqs
+    glow "Opening Claude Code for interactive review..."
+    echo ""
+    dim "You can ask Claude to edit articles, adjust tone, fix facts, etc."
+    dim "Type /quit when done, then run: ./lanturn publish"
+    echo ""
+    claude
+}
+
+# -------------------------------------------
+# PUBLISH — Commit and push (triggers Cloudflare deploy)
+# -------------------------------------------
+cmd_publish() {
+    if ! git rev-parse --git-dir &>/dev/null; then
+        err "Not a git repo. Run setup.sh first."
+        exit 1
+    fi
+
+    # Check for changes
+    if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+        echo "No changes to publish."
+        exit 0
+    fi
+
+    glow "Publishing to Cloudflare Pages..."
+    echo ""
+
+    # Show what's changing
+    echo "Files:"
+    git status --short
+    echo ""
+
+    # Build commit message from post titles
+    NEW_POSTS=$(git diff --name-only 2>/dev/null; git ls-files --others --exclude-standard)
+    TITLES=$(echo "$NEW_POSTS" | grep "content/posts" | while read f; do
+        [ -f "$f" ] && grep "^title:" "$f" 2>/dev/null | head -1 | sed 's/title: *"*//;s/"*$//'
+    done)
+
+    if [ -n "$TITLES" ]; then
+        MSG="Publish: $(echo "$TITLES" | head -3 | tr '\n' ', ' | sed 's/,$//')"
+    else
+        MSG="Update $(date +%Y-%m-%d)"
+    fi
+
+    git add -A
+    git commit -m "$MSG"
+    git push origin main
+
+    echo ""
+    ok "Pushed! Cloudflare Pages will deploy in ~30 seconds."
+    dim "Check: https://dash.cloudflare.com → Workers & Pages"
+    echo ""
+}
+
+# -------------------------------------------
+# HELP
+# -------------------------------------------
+cmd_help() {
+    echo ""
+    glow "Lanturn Weekly — Editorial Pipeline"
+    echo ""
+    echo "  Usage: ./lanturn <command>"
+    echo ""
+    echo "  Commands:"
+    dim "research    Search for this week's positive news → editorial/candidates.md"
+    dim "draft       Draft articles from your approved picks → content/posts/"
+    dim "review      Open Claude Code interactively to edit drafts"
+    dim "publish     Commit & push → auto-deploys to Cloudflare Pages"
+    echo ""
+    echo "  Weekly workflow:"
+    dim "1. ./lanturn research          (Thursday/Friday)"
+    dim "2. Edit editorial/candidates.md — mark picks with [x]"
+    dim "3. ./lanturn draft             (Friday/Saturday)"
+    dim "4. Review content/posts/*.md   (optional: ./lanturn review)"
+    dim "5. ./lanturn publish           (Saturday/Sunday → live Monday 6am CST)"
+    echo ""
+}
+
+# -------------------------------------------
+# Router
+# -------------------------------------------
+case "${1:-help}" in
+    research) cmd_research ;;
+    draft)    cmd_draft ;;
+    review)   cmd_review ;;
+    publish)  cmd_publish ;;
+    help|*)   cmd_help ;;
+esac

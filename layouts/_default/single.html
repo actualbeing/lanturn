@@ -1,0 +1,43 @@
+{{ define "main" }}
+<article>
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      {{ with .Params.tags }}
+        · {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="{{ "/tags/" | relURL }}{{ $t | urlize }}/" class="tag">{{ $t }}</a>{{ end }}
+      {{ end }}
+    </div>
+    <h1 class="post-title">{{ .Title }}</h1>
+    {{ with .Description }}
+    <p class="post-description">{{ . }}</p>
+    {{ end }}
+    {{ with .Params.sources }}
+    <div class="post-sources">
+      <span>Sources:</span>
+      {{ range $i, $s := . }}{{ if $i }} · {{ end }}<a href="{{ $s.url }}" target="_blank" rel="noopener">{{ $s.publication }}</a>{{ end }}
+    </div>
+    {{ end }}
+  </header>
+
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+
+  <footer class="post-footer">
+    <nav class="post-nav">
+      {{ with .PrevInSection }}
+      <div class="post-nav__prev">
+        <span class="post-nav__label">← Previous</span>
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </div>
+      {{ end }}
+      {{ with .NextInSection }}
+      <div class="post-nav__next">
+        <span class="post-nav__label">Next →</span>
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </div>
+      {{ end }}
+    </nav>
+  </footer>
+</article>
+{{ end }}

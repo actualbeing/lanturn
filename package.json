@@ -1,0 +1,13 @@
+{
+  "name": "lanturn-weekly",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Positive news newsletter — editorial pipeline",
+  "scripts": {
+    "research": "node scripts/research.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  }
+}
