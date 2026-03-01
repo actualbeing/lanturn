@@ -4,6 +4,8 @@ title: "Lanturn Weekly"
 pagination:
   pagerSize: 10
 
+relativeURLs: true
+
 params:
   description: "Real news. Real actions. No noise."
   author: "Lanturn Weekly"
