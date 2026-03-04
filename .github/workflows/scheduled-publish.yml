@@ -1,0 +1,19 @@
+name: Scheduled Publish
+
+on:
+  schedule:
+    # 3:00 AM CST (9:00 UTC) every Monday and Thursday
+    - cron: "0 9 * * 1,4"
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push empty commit to trigger Cloudflare Pages rebuild
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "scheduled publish"
+          git push
