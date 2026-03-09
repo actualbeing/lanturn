@@ -7,6 +7,9 @@ on:
     - cron: "15 9 * * 1,4"
   workflow_dispatch: # allow manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   trigger-build:
     runs-on: ubuntu-latest
