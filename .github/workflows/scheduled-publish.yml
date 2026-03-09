@@ -2,8 +2,9 @@ name: Scheduled Publish
 
 on:
   schedule:
-    # 3:00 AM CST (9:00 UTC) every Monday and Thursday
-    - cron: "0 9 * * 1,4"
+    # 6:15 AM CST (12:15 UTC) every Monday and Thursday
+    # Must run AFTER 6:00 AM CST — Hugo skips future-dated posts
+    - cron: "15 12 * * 1,4"
   workflow_dispatch: # allow manual trigger
 
 jobs:
