@@ -41,7 +41,7 @@ A positive news publication. Real events, verified sources, actionable CTAs. No 
 ```yaml
 ---
 title: "Lanturn Weekly: [Tagline]"  # or "Lanturn Glow: [Title]"
-date: YYYY-MM-DDT06:00:00-06:00     # Always 6 AM CST
+date: YYYY-MM-DDT03:00:00-06:00     # Always 3 AM CST
 description: "50-70 words for digest, 30-50 for glow"
 tags: ["weekly-digest", "topic1", "topic2"]  # or ["glow", "topic"]
 sources:
